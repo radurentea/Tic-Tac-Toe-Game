@@ -1,29 +1,104 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div>
+    <div class="scoreBoard">
+      <span>O has {{ wins.O }} wins</span>
+      <h2>Score Board</h2>
+      <span>X has {{ wins.X }} wins</span>
     </div>
-    <router-view/>
+    <div id="app">
+      <div id="details">
+        <h1>Tic Tac Toe</h1>
+        <h2>Match #{{ matches + 1 }}</h2>
+      </div>
+      <grid></grid>
+      <button class="restart" @click="restart">Start New Game</button>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+<script>
+import Grid from "./components/Grid.vue";
+export default {
+  components: { Grid },
+  name: "app",
+  data() {
+    return {
+      matches: 0,
+      wins: {
+        O: 0,
+        X: 0
+      }
+    };
+  },
+  methods: {
+    restart() {
+      Event.$emit("clearCell");
+      Event.$emit("gridReset");
+      this.matches++;
+    }
+  },
+  created() {
+    Event.$on("win", winner => this.wins[winner]++);
+  }
+};
+</script>
+
+<style>
+body {
+  background-color: #ef7d00;
+  color: #fff;
+  font-family: "Dosis", Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  margin: 0px;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+#app {
+  margin: 0 auto;
+  max-width: 270px;
+  color: #fff;
+}
+h1 {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 3em;
+}
+.restart {
+  background-color: #dc3455;
+  color: #fff;
+  border: 0px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-family: "Dosis", Helvetica, sans-serif;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 0px;
+  padding: 15px;
+  width: 100%;
+}
+.restart:hover {
+  background-color: #dc2455;
+  cursor: pointer;
+}
+.scoreBoard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 15px;
+  background-color: #00a97a;
+  box-shadow: 10px solid #fff;
+  padding: 20px 0px;
+  overflow-x: none;
+}
+.scoreBoard h2 {
+  margin: 0px;
+}
+.scoreBoard span {
+  float: right;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 20px;
 }
 </style>
